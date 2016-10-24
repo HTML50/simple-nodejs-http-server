@@ -5,9 +5,7 @@ var http = require('http');
 var url = require('url');
 var log = console.log;
 
-
 var server = http.createServer(function(request, response) {
-
 
 	//这个最大的坑就是，如果访问一个目录文件夹，比如resume
 	//加上 / 访问 resume/
@@ -16,7 +14,6 @@ var server = http.createServer(function(request, response) {
 	//尝试多种方法后，最终使用对于没有 / 的文件访问采取重定向到含 / 文件的方法。
 
 	var filepath = '.' + url.parse(request.url).pathname;
-
 	fs.stat(filepath, function(err, stats) {
 		
 		
@@ -33,7 +30,6 @@ var server = http.createServer(function(request, response) {
 
 			fs.stat(filepath, function(err, stats) {
 				log('请求', filepath)
-
 				if (!err && stats.isFile()) {
 					log('完成请求', filepath)
 					response.writeHead(200);
@@ -56,18 +52,14 @@ var server = http.createServer(function(request, response) {
 					log('文件读取完成', filepath)
 					response.writeHead(200);
 					fs.createReadStream(filepath).pipe(response);
-				} else {
-					log('404:不存在此文件')
-					response.writeHead(404);
-					response.end('404');
 				}
 				log('-------------------------------');
 			})
 		} else {
 			log('请求', filepath)
-			log('404:错误的路径')
+			log('404: 错误的路径')
 			response.writeHead(404);
-			response.end('404');
+			response.end('404: File Not Found');
 			log('-------------------------------');
 		}
 	});
